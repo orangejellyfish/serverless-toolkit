@@ -1,0 +1,19 @@
+{
+  "name": "@orangejellyfish/serverless-handlers",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": "github:orangejellyfish/serverless-handlers",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel -d lib src"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jest": "^22.5.1",
+    "jest": "^24.8.0"
+  }
+}
