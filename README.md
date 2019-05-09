@@ -10,7 +10,7 @@ All of the handler factories are exported as named exports and expect a handler
 function:
 
 ```js
-import { handleJSON } from '@orangejellyfish/serverless-handlers';`
+import { handleJSON } from '@orangejellyfish/serverless-handlers';
 
 export default handleJSON(async (body) => {
   return {
