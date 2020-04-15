@@ -5,7 +5,9 @@
   "repository": "github:orangejellyfish/serverless-handlers",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel -d lib src"
+    "build": "babel -d lib src",
+    "test": "jest src",
+    "test:watch": "npm test -- --watch"
   },
   "engines": {
     "node": "12.14.1"
