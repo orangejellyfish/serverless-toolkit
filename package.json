@@ -5,7 +5,7 @@
   "repository": "github:orangejellyfish/serverless-handlers",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel -d lib src",
+    "build": "babel -d lib --ignore '**/*.spec.js' src",
     "test": "jest src",
     "test:watch": "npm test -- --watch"
   },
