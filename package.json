@@ -7,6 +7,9 @@
   "scripts": {
     "build": "babel -d lib src"
   },
+  "engines": {
+    "node": "12.14.1"
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
