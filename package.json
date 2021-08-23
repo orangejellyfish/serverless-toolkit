@@ -1,6 +1,6 @@
 {
   "name": "@orangejellyfish/serverless-handlers",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "license": "MIT",
   "repository": "github:orangejellyfish/serverless-handlers",
   "main": "lib/index.js",
