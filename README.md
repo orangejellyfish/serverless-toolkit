@@ -51,4 +51,11 @@ a message being published to an AWS SNS topic.
 
 The handler will be invoked with the parsed JSON body of the message.
 
+### `handleSQSPartialBatchFailure`
+
+Creates a Lambda function handler that is expected to be invoked in response to
+a batch of messages on an SQS queue. Automatically removes successfully handled
+messages from the queue and throws any failures to ensure those messages are
+returned to the queue for later processing.
+
 [sls]: https://serverless.com/framework/
