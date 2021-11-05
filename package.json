@@ -18,17 +18,17 @@
     "aws-sdk": "2.952.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.15.7",
-    "@babel/eslint-parser": "^7.15.7",
-    "@babel/preset-env": "^7.15.6",
-    "aws-sdk": "^2.952.0",
-    "eslint": "^7.32.0",
+    "@babel/cli": "^7.16.0",
+    "@babel/eslint-parser": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "aws-sdk": "2.952.0",
+    "eslint": "^8.1.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-jest": "^24.5.2",
-    "husky": "^7.0.2",
-    "jest": "^27.2.4",
-    "lint-staged": "^11.2.0"
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jest": "^25.2.3",
+    "husky": "^7.0.4",
+    "jest": "^27.3.1",
+    "lint-staged": "^11.2.6"
   },
   "lint-staged": {
     "src/**/*.js": [
