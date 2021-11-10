@@ -58,4 +58,12 @@ a batch of messages on an SQS queue. Automatically removes successfully handled
 messages from the queue and throws any failures to ensure those messages are
 returned to the queue for later processing.
 
+## Additional utilities
+
+### `responseJSON`
+
+Produce an object of the format expected by a Lambda function that has been
+invoked in response to an HTTP request via API Gateway. Intended to work hand
+in hand with the `handleJSON` handler factory.
+
 [sls]: https://serverless.com/framework/
