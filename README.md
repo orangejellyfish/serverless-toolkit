@@ -51,6 +51,18 @@ a message being published to an AWS SNS topic.
 
 The handler will be invoked with the parsed JSON body of the message.
 
+### `handleSNSFIFO`
+
+Creates a Lambda function handler that is expected to be invoked in response to
+a message being published to an AWS SNS FIFO topic. Since the only valid
+destination for messages on FIFO topics is an SQS FIFO queue this utility is
+expected to be used in conjunction with `handleSQSPartialBatchFailure`.
+
+The handler will be invoked with the parsed JSON body of the message and the
+original events from SNS and SQS. The return value of the handler is ignored and
+the original SQS event object is passed back to the SQS partial batch failure
+handler.
+
 ### `handleSQSPartialBatchFailure`
 
 Creates a Lambda function handler that is expected to be invoked in response to
