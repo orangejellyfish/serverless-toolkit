@@ -17,6 +17,9 @@
   "peerDependencies": {
     "aws-sdk": "2.1001.0"
   },
+  "dependencies": {
+    "dynamodb-update-expression": "^0.1.21"
+  },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/eslint-parser": "^7.16.5",

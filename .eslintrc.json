@@ -8,5 +8,8 @@
   ],
   "env": {
     "jest/globals": true
+  },
+  "rules": {
+    "no-await-in-loop": 0
   }
 }

@@ -9,3 +9,8 @@ export { default as handleURLEncoding } from './lambda-handlers/url-encoding';
 // Lambda responses. These are utility functions for generating the return
 // values of Lambda functions.
 export { default as responseJSON } from './lambda-responses/json';
+
+// DynamoDB utility. A thin wrapper around the DynamoDB document client from the
+// AWS SDK. Automatically handles tasks like pagination and always returns
+// promises.
+export { default as createDynamoDBClient } from './dynamodb';
