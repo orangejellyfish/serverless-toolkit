@@ -1,8 +1,8 @@
 {
-  "name": "@orangejellyfish/serverless-handlers",
-  "version": "0.6.2",
+  "name": "@orangejellyfish/serverless-toolkit",
+  "version": "1.0.0",
   "license": "MIT",
-  "repository": "github:orangejellyfish/serverless-handlers",
+  "repository": "github:orangejellyfish/serverless-toolkit",
   "main": "lib/index.js",
   "scripts": {
     "build": "babel -d lib --ignore '**/*.spec.js' src",
