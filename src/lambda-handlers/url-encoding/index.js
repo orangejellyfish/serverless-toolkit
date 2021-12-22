@@ -10,6 +10,6 @@ export default function handler(fn) {
   return async (event) => {
     const requestBody = qs.parse(event.body);
 
-    return fn(requestBody, event.pathParameters);
+    return fn(requestBody, event);
   };
 }

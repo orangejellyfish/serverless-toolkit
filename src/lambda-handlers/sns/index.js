@@ -21,6 +21,6 @@ export default function handler(fn) {
       // appropriately (probably with a 400 Bad Request status).
     }
 
-    return fn(message);
+    return fn(message, event);
   };
 }
