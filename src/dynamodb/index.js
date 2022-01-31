@@ -127,5 +127,11 @@ export default function createClient(documentClient) {
 
       return unmarshalledRecords;
     },
+
+    transactWrite: async function transactWrite(params) {
+      const res = await db.transactWrite(params).promise();
+
+      return res;
+    },
   };
 }
