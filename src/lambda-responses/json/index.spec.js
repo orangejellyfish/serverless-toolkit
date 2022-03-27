@@ -10,12 +10,24 @@ describe('JSON response utility', () => {
     expect(responseJSON(200)).toHaveProperty('headers.Access-Control-Allow-Credentials', true);
   });
 
-  it('should add stringified JSON to the body', () => {
-    expect(responseJSON(200, { foo: 'bar' })).toHaveProperty('body', JSON.stringify({ foo: 'bar' }));
+  it('should return valid JSON in the body given a string', () => {
+    expect(responseJSON(200, 'bar')).toHaveProperty('body', '"bar"');
   });
 
-  it('should add non-objects to the body', () => {
-    expect(responseJSON(200, 'foo')).toHaveProperty('body', 'foo');
+  it('should return valid JSON in the body given a number', () => {
+    expect(responseJSON(200, 123)).toHaveProperty('body', 123);
+  });
+
+  it('should return valid JSON in the body given a boolean', () => {
+    expect(responseJSON(200, true)).toHaveProperty('body', true);
+  });
+
+  it('should return valid JSON in body given an array', () => {
+    expect(responseJSON(200, [{ foo: 'bar' }])).toHaveProperty('body', JSON.stringify([{ foo: 'bar' }]));
+  });
+
+  it('should return valid JSON in the body given an object', () => {
+    expect(responseJSON(200, { foo: 'bar' })).toHaveProperty('body', JSON.stringify({ foo: 'bar' }));
   });
 
   it('should add arbitrary options', () => {
