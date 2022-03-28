@@ -11,15 +11,15 @@ describe('JSON response utility', () => {
   });
 
   it('should return valid JSON in the body given a string', () => {
-    expect(responseJSON(200, 'bar')).toHaveProperty('body', '"bar"');
+    expect(responseJSON(200, 'bar')).toHaveProperty('body', JSON.stringify('bar'));
   });
 
   it('should return valid JSON in the body given a number', () => {
-    expect(responseJSON(200, 123)).toHaveProperty('body', 123);
+    expect(responseJSON(200, 123)).toHaveProperty('body', JSON.stringify(123));
   });
 
   it('should return valid JSON in the body given a boolean', () => {
-    expect(responseJSON(200, true)).toHaveProperty('body', true);
+    expect(responseJSON(200, true)).toHaveProperty('body', JSON.stringify(true));
   });
 
   it('should return valid JSON in body given an array', () => {

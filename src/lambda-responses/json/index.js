@@ -7,13 +7,7 @@ export default (statusCode, body, opts) => {
   };
 
   if (body) {
-    if (typeof body === 'object') {
-      response.body = JSON.stringify(body);
-    } else if (typeof body === 'string') {
-      response.body = `"${body}"`;
-    } else {
-      response.body = body;
-    }
+    response.body = JSON.stringify(body);
   }
 
   if (opts) {
