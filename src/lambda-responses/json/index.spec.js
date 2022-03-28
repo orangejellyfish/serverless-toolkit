@@ -22,6 +22,10 @@ describe('JSON response utility', () => {
     expect(responseJSON(200, true)).toHaveProperty('body', JSON.stringify(true));
   });
 
+  it('should return valid JSON in the body given a null value', () => {
+    expect(responseJSON(200, null)).toHaveProperty('body', JSON.stringify(null));
+  });
+
   it('should return valid JSON in body given an array', () => {
     expect(responseJSON(200, [{ foo: 'bar' }])).toHaveProperty('body', JSON.stringify([{ foo: 'bar' }]));
   });

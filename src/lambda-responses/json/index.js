@@ -6,7 +6,7 @@ export default (statusCode, body, opts) => {
     statusCode,
   };
 
-  if (body) {
+  if (body !== undefined) {
     response.body = JSON.stringify(body);
   }
 
