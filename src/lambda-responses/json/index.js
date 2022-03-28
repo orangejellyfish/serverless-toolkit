@@ -6,12 +6,8 @@ export default (statusCode, body, opts) => {
     statusCode,
   };
 
-  if (body) {
-    if (typeof body === 'object') {
-      response.body = JSON.stringify(body);
-    } else {
-      response.body = body;
-    }
+  if (body !== undefined) {
+    response.body = JSON.stringify(body);
   }
 
   if (opts) {
