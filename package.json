@@ -1,6 +1,6 @@
 {
   "name": "@orangejellyfish/serverless-toolkit",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "license": "MIT",
   "repository": "github:orangejellyfish/serverless-toolkit",
   "main": "lib/index.js",
