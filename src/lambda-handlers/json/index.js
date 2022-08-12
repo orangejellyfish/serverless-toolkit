@@ -5,7 +5,7 @@ export default function handler(fn) {
     throw new Error('Expected a handler function.');
   }
 
-  return async (event) => {
+  return async (event, ...args) => {
     let requestBody;
 
     try {
@@ -16,6 +16,6 @@ export default function handler(fn) {
       // appropriately (probably with a 400 Bad Request status).
     }
 
-    return fn(requestBody, event);
+    return fn(requestBody, event, ...args);
   };
 }
