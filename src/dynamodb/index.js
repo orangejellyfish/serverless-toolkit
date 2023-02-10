@@ -113,8 +113,8 @@ export default function createClient(documentClient) {
     },
 
     // Utility function to generate DynamoDB update expressions.
-    generateUpdateExpression: function generateUpdateExpression(original, updated) {
-      return expressions.getUpdateExpression(original, updated);
+    generateUpdateExpression: function generateUpdateExpression(original, updated, opts) {
+      return expressions.getUpdateExpression(original, updated, opts);
     },
 
     // Utility function to unmarshall records from a DynamoDB stream.
