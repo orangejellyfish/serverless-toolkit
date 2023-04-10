@@ -15,7 +15,7 @@
     "node": ">= 14.0.0"
   },
   "peerDependencies": {
-    "aws-sdk": "2.1083.0"
+    "aws-sdk": "2.1354.0"
   },
   "dependencies": {
     "dynamodb-update-expression": "^0.1.21"
@@ -24,7 +24,7 @@
     "@babel/cli": "^7.18.10",
     "@babel/eslint-parser": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
-    "aws-sdk": "2.1083.0",
+    "aws-sdk": "2.1354.0",
     "eslint": "^8.23.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
