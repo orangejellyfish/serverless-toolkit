@@ -1,18 +1,40 @@
-import AWS, { DynamoDB } from 'aws-sdk';
-import expressions from 'dynamodb-update-expression';
+import { ScanCommand } from '@aws-sdk/lib-dynamodb';
+import createClientAndCacheClient, {
+  getUpdateExpression,
+  BatchGetItemCommand,
+  BatchWriteItemCommand,
+  DeleteItemCommand,
+  GetItemCommand,
+  PutItemCommand,
+  QueryCommand,
+  TransactWriteItemsCommand,
+  UpdateItemCommand,
+  unmarshall,
+} from '../util/clients/dynamodb';
 
-export default function createClient(documentClient) {
-  const db = documentClient || new AWS.DynamoDB.DocumentClient();
+export default function createClient() {
+  const db = createClientAndCacheClient();
 
   return {
     // Insert a new item into the database.
-    put: async function put(params = {}) {
-      return db.put(params).promise();
+    put: async function put(params) {
+      if (!params) {
+        throw new Error('Missing required params');
+      }
+
+      const putCommand = new PutItemCommand(params);
+
+      return db.send(putCommand);
     },
 
     // Retrieve a single item by key.
     get: async function get(params) {
-      const res = await db.get(params).promise();
+      if (!params) {
+        throw new Error('Missing required params');
+      }
+
+      const getCommand = new GetItemCommand(params);
+      const res = await db.send(getCommand);
 
       if (!res || !res.Item) {
         return null;
@@ -22,25 +44,41 @@ export default function createClient(documentClient) {
     },
 
     // Retrieve multiple items.
-    batchGet: async function batchGet(table, keys, params = {}) {
+    batchGet: async function batchGet(table, keys, params) {
+      if (!table) {
+        throw new Error('Missing required table parameter');
+      }
+
+      if (!keys) {
+        throw new Error('Missing required keys parameter');
+      }
+
+      if (!params) {
+        throw new Error('Missing required params parameter');
+      }
+
       const MAX_KEYS_PER_BATCH_REQUEST = 100;
       const remaining = [...keys];
       const items = [];
 
       while (remaining.length) {
+        // @TODO we should implement some sort of back-off mechanism to better handle if this is a
+        // throttling issue.
+
+        // @TODO handle unprocessed items better right now it infinite loops.
+
         const Keys = remaining.splice(0, MAX_KEYS_PER_BATCH_REQUEST);
 
         const res = await db
-          .batchGet({
+          .send(new BatchGetItemCommand({
             RequestItems: {
               [table]: { Keys, ...params },
             },
-          })
-          .promise();
+          }));
 
         items.push(...res.Responses[table]);
 
-        const unprocessed = res.UnprocessedKeys[table]?.Keys;
+        const unprocessed = res?.UnprocessedKeys?.[table]?.Keys;
 
         if (unprocessed) {
           remaining.unshift(...unprocessed);
@@ -52,6 +90,14 @@ export default function createClient(documentClient) {
 
     // Create or update multiple items.
     batchWrite: async function batchWrite(table, items) {
+      if (!table) {
+        throw new Error('Missing required table parameter');
+      }
+
+      if (!items) {
+        throw new Error('Missing required items parameter');
+      }
+
       const MAX_ITEMS_PER_BATCH = 25;
       const numBatches = Math.ceil(items.length / MAX_ITEMS_PER_BATCH);
 
@@ -66,8 +112,7 @@ export default function createClient(documentClient) {
 
       while (batches.length) {
         const params = { RequestItems: batches.pop() };
-        const res = await db.batchWrite(params).promise();
-
+        const res = await db.send(new BatchWriteItemCommand(params));
         if (Object.keys(res.UnprocessedItems).length) {
           batches.push(res.UnprocessedItems);
         }
@@ -76,23 +121,37 @@ export default function createClient(documentClient) {
 
     // Update a single item by key.
     update: async function update(params) {
-      return db.update(params).promise();
+      if (!params) {
+        throw new Error('Missing required params parameter');
+      }
+
+      const updateCommand = new UpdateItemCommand(params);
+      return db.send(updateCommand);
     },
 
     // Delete items.
     delete: async function del(params) {
-      const res = await db.delete(params).promise();
+      if (!params) {
+        throw new Error('Missing required params parameter');
+      }
 
-      return res;
+      const deleteCommand = new DeleteItemCommand(params);
+      return db.send(deleteCommand);
     },
 
     // Scan the table.
     scan: async function scan(params) {
+      if (!params) {
+        throw new Error('Missing required params parameter');
+      }
+
       const items = [];
       let res;
 
       do {
-        res = await db.scan({ ...params, ExclusiveStartKey: res?.LastEvaluatedKey }).promise();
+        res = await db.send(
+          new ScanCommand({ ...params, ExclusiveStartKey: res?.LastEvaluatedKey }),
+        );
         items.push(...res.Items);
       } while (res.LastEvaluatedKey);
 
@@ -101,11 +160,16 @@ export default function createClient(documentClient) {
 
     // Query a table on primary key or secondary index.
     query: async function query(params) {
+      if (!params) {
+        throw new Error('Missing required params parameter');
+      }
       const items = [];
       let res;
 
       do {
-        res = await db.query({ ...params, ExclusiveStartKey: res?.LastEvaluatedKey }).promise();
+        res = await db.send(
+          new QueryCommand({ ...params, ExclusiveStartKey: res?.LastEvaluatedKey }),
+        );
         items.push(...res.Items);
       } while (res.LastEvaluatedKey);
 
@@ -114,24 +178,33 @@ export default function createClient(documentClient) {
 
     // Utility function to generate DynamoDB update expressions.
     generateUpdateExpression: function generateUpdateExpression(original, updated, opts) {
-      return expressions.getUpdateExpression(original, updated, opts);
+      if (!original || !updated) {
+        throw new Error('Missing original and updated parameter');
+      }
+      return getUpdateExpression(original, updated, opts);
     },
 
     // Utility function to unmarshall records from a DynamoDB stream.
     unmarshallRecords: function unmarshallRecords(records, key = 'NewImage') {
+      if (!records) {
+        throw new Error('Missing required records parameter');
+      }
+
       const unmarshalledRecords = records.map((record) => {
         const image = record?.dynamodb?.[key];
 
-        return DynamoDB.Converter.unmarshall(image);
+        return unmarshall(image);
       });
 
       return unmarshalledRecords;
     },
 
     transactWrite: async function transactWrite(params) {
-      const res = await db.transactWrite(params).promise();
+      if (!params) {
+        throw new Error('Missing required params parameter');
+      }
 
-      return res;
+      return db.send(new TransactWriteItemsCommand(params));
     },
   };
 }

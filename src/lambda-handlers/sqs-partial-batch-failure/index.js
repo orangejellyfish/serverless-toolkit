@@ -1,4 +1,4 @@
-import AWS from 'aws-sdk';
+import createClientAndCacheClient, { DeleteMessageBatchCommand } from '../../util/clients/sqs';
 
 const SQS_BATCH_DELETE_CHUNK_SIZE = 10;
 
@@ -14,9 +14,7 @@ export default function handler(fn, config = {}) {
     throw new Error('Expected an SQS queue URL.');
   }
 
-  const sqs = config?.sqs ?? new AWS.SQS({
-    apiVersion: '2012-11-05',
-  });
+  const sqsClient = config?.sqsClient ?? createClientAndCacheClient(config);
 
   return async (event) => {
     const records = event?.Records;
@@ -63,10 +61,13 @@ export default function handler(fn, config = {}) {
         // TODO: It is possible for this to fail, and it's also possible for it
         // to succeed overall but with individual message deletion failures. We
         // need to handle those failures in some way.
-        await Promise.all(chunks.map((chunk) => sqs.deleteMessageBatch({
-          QueueUrl: config.queueURL,
-          Entries: chunk,
-        }).promise()));
+        await Promise.all(chunks.map((chunk) => {
+          const command = new DeleteMessageBatchCommand({
+            QueueUrl: config.queueURL,
+            Entries: chunk,
+          });
+          return sqsClient.send(command);
+        }));
       }
 
       // If any records failed to process (if their handlers returned a promise
