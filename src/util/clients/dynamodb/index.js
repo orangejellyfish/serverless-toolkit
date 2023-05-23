@@ -17,7 +17,7 @@ const createClientAndCacheClient = ({ config, translateConfig } = {}) => {
   return ddbDocClient;
 };
 
-export * from '@aws-sdk/client-dynamodb';
 export * from '@aws-sdk/util-dynamodb';
+export * from '@aws-sdk/lib-dynamodb';
 export * from 'dynamodb-update-expression';
 export default createClientAndCacheClient;

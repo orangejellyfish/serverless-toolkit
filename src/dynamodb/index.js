@@ -1,14 +1,14 @@
-import { ScanCommand } from '@aws-sdk/lib-dynamodb';
 import createClientAndCacheClient, {
   getUpdateExpression,
-  BatchGetItemCommand,
-  BatchWriteItemCommand,
-  DeleteItemCommand,
-  GetItemCommand,
-  PutItemCommand,
+  BatchGetCommand,
+  BatchWriteCommand,
+  DeleteCommand,
+  GetCommand,
+  PutCommand,
   QueryCommand,
-  TransactWriteItemsCommand,
-  UpdateItemCommand,
+  ScanCommand,
+  TransactWriteCommand,
+  UpdateCommand,
   unmarshall,
 } from '../util/clients/dynamodb';
 
@@ -22,7 +22,7 @@ export default function createClient() {
         throw new Error('Missing required params');
       }
 
-      const putCommand = new PutItemCommand(params);
+      const putCommand = new PutCommand(params);
 
       return db.send(putCommand);
     },
@@ -33,7 +33,7 @@ export default function createClient() {
         throw new Error('Missing required params');
       }
 
-      const getCommand = new GetItemCommand(params);
+      const getCommand = new GetCommand(params);
       const res = await db.send(getCommand);
 
       if (!res || !res.Item) {
@@ -70,7 +70,7 @@ export default function createClient() {
         const Keys = remaining.splice(0, MAX_KEYS_PER_BATCH_REQUEST);
 
         const res = await db
-          .send(new BatchGetItemCommand({
+          .send(new BatchGetCommand({
             RequestItems: {
               [table]: { Keys, ...params },
             },
@@ -112,7 +112,7 @@ export default function createClient() {
 
       while (batches.length) {
         const params = { RequestItems: batches.pop() };
-        const res = await db.send(new BatchWriteItemCommand(params));
+        const res = await db.send(new BatchWriteCommand(params));
         if (Object.keys(res.UnprocessedItems).length) {
           batches.push(res.UnprocessedItems);
         }
@@ -125,7 +125,7 @@ export default function createClient() {
         throw new Error('Missing required params parameter');
       }
 
-      const updateCommand = new UpdateItemCommand(params);
+      const updateCommand = new UpdateCommand(params);
       return db.send(updateCommand);
     },
 
@@ -135,7 +135,7 @@ export default function createClient() {
         throw new Error('Missing required params parameter');
       }
 
-      const deleteCommand = new DeleteItemCommand(params);
+      const deleteCommand = new DeleteCommand(params);
       return db.send(deleteCommand);
     },
 
@@ -204,7 +204,7 @@ export default function createClient() {
         throw new Error('Missing required params parameter');
       }
 
-      return db.send(new TransactWriteItemsCommand(params));
+      return db.send(new TransactWriteCommand(params));
     },
   };
 }
