@@ -12,8 +12,8 @@ import createClientAndCacheClient, {
   unmarshall,
 } from '../util/clients/dynamodb';
 
-export default function createClient() {
-  const db = createClientAndCacheClient();
+export default function createClient({ config, translateConfig } = {}) {
+  const db = createClientAndCacheClient({ config, translateConfig });
 
   return {
     // Insert a new item into the database.
