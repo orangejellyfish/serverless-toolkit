@@ -6,6 +6,7 @@ import dynamoDbClient from '.';
 
 jest.mock('@aws-sdk/client-dynamodb');
 jest.mock('@aws-sdk/lib-dynamodb');
+jest.mock('aws-xray-sdk');
 
 describe('common / utils / dynamodb', () => {
   beforeEach(() => {
@@ -47,6 +48,19 @@ describe('common / utils / dynamodb', () => {
     });
 
     expect(client2).toMatchObject(client1);
+  });
+
+  it('should allow wrapping of the client with AWS X-Ray', () => {
+    let localDynamoDbClient;
+
+    jest.isolateModules(() => {
+      localDynamoDbClient = require('.').default;
+    });
+
+    // This is a poor assertion which could be improved by mocking the call to
+    // `XRay.captureAWSv3Client` and ensuring it's been called with the client
+    // instance, but I couldn't figure out how to do that easily.
+    expect.anything(localDynamoDbClient({ xray: true }));
   });
 
   it('should set region from env var AWS_REGION', () => {
