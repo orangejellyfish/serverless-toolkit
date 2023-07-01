@@ -19,3 +19,23 @@ export default function handler(fn) {
     return fn(requestBody, event, ...args);
   };
 }
+
+// Middleware-compatible version of the above utility.
+export const httpJSONHandler = () => {
+  const handleBefore = async (request) => {
+    try {
+      request.event.body = JSON.parse(request.event.body);
+    } catch (err) {
+      const error = new Error('Cannot parse request body as JSON', {
+        cause: err,
+      });
+
+      error.statusCode = 400;
+      throw new Error('Cannot parse request body as JSON');
+    }
+  };
+
+  return {
+    before: handleBefore,
+  };
+};
