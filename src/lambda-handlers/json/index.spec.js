@@ -1,4 +1,4 @@
-import makeHandler from '.';
+import makeHandler, { httpJSONHandler } from '.';
 
 describe('JSON request handler', () => {
   it('should throw if not passed a handler function', () => {
@@ -44,5 +44,22 @@ describe('JSON request handler', () => {
     expect(handler.mock.calls[0][2]).toBe(1);
     expect(handler.mock.calls[0][3]).toBe(2);
     expect(handler.mock.calls[0][4]).toBe(3);
+  });
+});
+
+describe('JSON request middleware', () => {
+  it('should replace the request body with parsed JSON', async () => {
+    const { before: middleware } = httpJSONHandler();
+    const mockRequest = { event: { body: '{"foo": "bar"}' } };
+
+    await middleware(mockRequest);
+    expect(mockRequest.event.body).toMatchObject({ foo: 'bar' });
+  });
+
+  it('should throw when passed invalid JSON', async () => {
+    const { before: middleware } = httpJSONHandler();
+    const mockRequest = { event: { body: '{"invalidJSON"}' } };
+
+    expect(middleware(mockRequest)).rejects.toThrow('Cannot parse');
   });
 });
