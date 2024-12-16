@@ -37,7 +37,7 @@ function wrap(handler) {
     };
 
     try {
-      await runMiddleware(before.reverse(), request);
+      await runMiddleware(before.slice().reverse(), request);
       request.response = await handler(request.event, request.context);
       await runMiddleware(after, request);
     } catch (err) {
