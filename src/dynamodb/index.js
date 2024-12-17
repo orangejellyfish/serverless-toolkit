@@ -2,6 +2,7 @@ import createClientAndCacheClient, {
   getUpdateExpression,
   BatchGetCommand,
   BatchWriteCommand,
+  ExecuteStatementCommand,
   DeleteCommand,
   GetCommand,
   PutCommand,
@@ -205,6 +206,24 @@ export default function createClient({ config, translateConfig, xray } = {}) {
       }
 
       return db.send(new TransactWriteCommand(params));
+    },
+
+    executeStatement: async function executeStatement(params) {
+      if (!params) {
+        throw new Error('Missing required params parameter');
+      }
+
+      const items = [];
+      let res;
+
+      do {
+        res = await db.send(
+          new ExecuteStatementCommand({ ...params, NextToken: res?.NextToken }),
+        );
+        items.push(...res.Items);
+      } while (res.LastEvaluatedKey);
+
+      return items;
     },
   };
 }
