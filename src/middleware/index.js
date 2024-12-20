@@ -1,8 +1,14 @@
 // Utility function to run a list of async middleware functions in sequence.
 async function runMiddleware(stack, ...args) {
   for (const middleware of stack) {
-    await middleware(...args);
+    const res = await middleware(...args);
+
+    if (res !== undefined) {
+      return res;
+    }
   }
+
+  return undefined;
 }
 
 // A Middy-style middleware provider. Wraps a Lambda handler function and
@@ -37,7 +43,15 @@ function wrap(handler) {
     };
 
     try {
-      await runMiddleware(before.slice().reverse(), request);
+      const res = await runMiddleware(before.slice().reverse(), request);
+
+      // If any middleware has returned a value we stop and send that value
+      // directly back to the client. This is useful for e.g. middleware for
+      // managing CORS headers.
+      if (res !== undefined) {
+        return res;
+      }
+
       request.response = await handler(request.event, request.context);
       await runMiddleware(after, request);
     } catch (err) {
